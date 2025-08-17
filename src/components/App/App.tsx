@@ -8,8 +8,8 @@ import SearchBox from '../SearchBox/SearchBox';
 import Modal from "../Modal/Modal";
 import NoteForm from "../NoteForm/NoteForm";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
-import Loader from "../Loader/Loader";
 import { useDebounce } from "use-debounce";
+import Loader from "../Loader/Loader";
 
 export default function App() {
 
