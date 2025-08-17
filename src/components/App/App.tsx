@@ -21,7 +21,7 @@ export default function App() {
   const { data, isLoading, isError, isSuccess } = useQuery({ // стан запиту
     queryKey: ["notes", page, debouncedSearch],
     queryFn: () => fetchNotes(page, debouncedSearch),
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData // без блимання
   })
 
 const handleSearchChange = (value: string) => {
