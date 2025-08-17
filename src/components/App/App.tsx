@@ -49,7 +49,7 @@ const handleSearchChange = (value: string) => {
           <button className={css.button} onClick={openModal}>Create note +</button>}
         </header> 
 
-        {isLoading && <Loader />}
+        {/* {isLoading && <Loader />} */}
 
         {isError && <ErrorMessage />}
 
