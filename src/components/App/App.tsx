@@ -9,7 +9,7 @@ import Modal from "../Modal/Modal";
 import NoteForm from "../NoteForm/NoteForm";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import { useDebounce } from "use-debounce";
-import Loader from "../Loader/Loader";
+// import Loader from "../Loader/Loader";
 
 export default function App() {
 
@@ -18,7 +18,7 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false); // стан модального вікна
   const [debouncedSearch] = useDebounce(search, 1000); // стан затримки пошуку
 
-  const { data, isLoading, isError, isSuccess } = useQuery({ // стан запиту
+  const { data, isError, isSuccess } = useQuery({ // стан запиту
     queryKey: ["notes", page, debouncedSearch],
     queryFn: () => fetchNotes(page, debouncedSearch),
     placeholderData: keepPreviousData // без блимання
@@ -49,7 +49,7 @@ const handleSearchChange = (value: string) => {
           <button className={css.button} onClick={openModal}>Create note +</button>}
         </header> 
 
-        {isLoading && <Loader />}
+        {/* {isLoading && <Loader />} */}
 
         {isError && <ErrorMessage />}
 
