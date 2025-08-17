@@ -18,19 +18,16 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false); // стан модального вікна
   const [debouncedSearch] = useDebounce(search, 1000); // стан затримки пошуку
 
-
-  const { data, isLoading, isError, isSuccess } = useQuery({
+  const { data, isLoading, isError, isSuccess } = useQuery({ // стан запиту
     queryKey: ["notes", page, debouncedSearch],
     queryFn: () => fetchNotes(page, debouncedSearch),
     placeholderData: keepPreviousData
   })
 
-
 const handleSearchChange = (value: string) => {
   setSearch(value);
   setPage(1);
 }
-
     const openModal = () => {
     setIsModalOpen(true);
   };
