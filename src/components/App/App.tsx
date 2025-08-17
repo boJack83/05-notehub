@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import css from './App.module.css'
+import { useQuery, keepPreviousData } from '@tanstack/react-query'
+import NoteList from "../NoteList/NoteList";
+import { fetchNotes } from "../../services/noteService";
+import { useState } from "react";
+import Pagination from '../Pagination/Pagination';
+import SearchBox from '../SearchBox/SearchBox';
+import Modal from "../Modal/Modal";
+import NoteForm from "../NoteForm/NoteForm";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import Loader from "../Loader/Loader";
+import { useDebounce } from "use-debounce";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+
+  const [search, setSearch] = useState(""); // стан для пошуку
+  const [page, setPage] = useState(1); // стан для пагінації
+  const [isModalOpen, setIsModalOpen] = useState(false); // стан модального вікна
+  const [debouncedSearch] = useDebounce(search, 1000); // стан затримки пошуку
+
+
+  const { data, isLoading, isError, isSuccess } = useQuery({
+    queryKey: ["notes", page, debouncedSearch],
+    queryFn: () => fetchNotes(page, debouncedSearch),
+    placeholderData: keepPreviousData
+  })
+
+
+const handleSearchChange = (value: string) => {
+  setSearch(value);
+  setPage(1);
+}
+
+    const openModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div className={css.app}>
+	<header className={css.toolbar}>
+          {/* Компонент SearchBox */
+          <SearchBox value={search} onChange={handleSearchChange} />}
+          
+          {/* Пагінація */}
+          {isSuccess && data?.totalPages > 1 && <Pagination totalPages={data.totalPages} currentPage={page} onPageChange={setPage} />}
+          
+          {/* Кнопка створення нотатки */
+          <button className={css.button} onClick={openModal}>Create note +</button>}
+        </header> 
+
+        {isLoading && <Loader />}
+
+        {isError && <ErrorMessage />}
+
+        {data && data?.notes.length > 0 && <NoteList notes={data.notes} />}
+
+        {isModalOpen && (<Modal onClose={closeModal}> <NoteForm onCancel={closeModal} /></Modal>)}
+    </div>
     </>
   )
 }
-
-export default App
